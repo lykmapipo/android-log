@@ -37,7 +37,7 @@ public class Log {
     public static final int ERROR = android.util.Log.ERROR; // 6
     public static final int ASSERT = android.util.Log.ASSERT; // 7
 
-    // constants
+    // common keys
     private static final String KEY_PRIORITY = "priority";
     private static final String KEY_TAG = "tag";
     private static final String KEY_MESSAGE = "message";
