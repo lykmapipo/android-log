@@ -75,7 +75,7 @@ public class LogTest {
     }
 
     @Test
-    public void shouldInitializeLog_01() {
+    public void shouldInitializeLogWithDebugTree() {
         Log.alreadyInitialized = false;
         Log.create(true);
 
@@ -87,7 +87,7 @@ public class LogTest {
     }
 
     @Test
-    public void shouldInitializeLog_02() {
+    public void shouldInitializeLogWithCrashlyticsTree() {
         Log.alreadyInitialized = false;
         Log.create(false);
 
