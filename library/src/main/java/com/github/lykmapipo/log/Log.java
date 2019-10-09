@@ -1,6 +1,8 @@
 package com.github.lykmapipo.log;
 
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.collection.ArraySet;
@@ -334,6 +336,45 @@ public class Log {
     }
 
     /**
+     * Set custom properties to {@link Crashlytics}
+     *
+     * @param key   valid property key
+     * @param value valid property value
+     * @author lally elias<lallyelias87@gmail.com>
+     * @since 0.1.0
+     */
+    public static void set(@NonNull String key, @NonNull Object value) {
+        // ensure valid key
+        if (!TextUtils.isEmpty(key)) {
+            // set boolean property
+            if (value instanceof Boolean) {
+                Crashlytics.setBool(key, (Boolean) value);
+            }
+            // set double property
+            if (value instanceof Double) {
+                Crashlytics.setDouble(key, (Double) value);
+            }
+            // set float property
+            if (value instanceof Float) {
+                Crashlytics.setFloat(key, (Float) value);
+            }
+            // set int property
+            if (value instanceof Integer) {
+                Crashlytics.setInt(key, (Integer) value);
+            }
+            // set long property
+            if (value instanceof Long) {
+                Crashlytics.setLong(key, (Long) value);
+            }
+            // set string property
+            if (value instanceof String) {
+                Crashlytics.setString(key, (String) value);
+            }
+        }
+
+    }
+
+    /**
      * {@link Crashlytics} tree for {@link Timber}
      *
      * @author lally elias<lallyelias87@gmail.com>
@@ -356,7 +397,6 @@ public class Log {
             Crashlytics.setInt(KEY_PRIORITY, priority);
             Crashlytics.setString(KEY_TAG, tag);
             Crashlytics.setString(KEY_MESSAGE, message);
-            // TODO: pass additional custom properties
 
             // log
             if (t == null) {
