@@ -96,7 +96,7 @@ public class Log {
      * * @since 0.1.0
      */
     @VisibleForTesting
-    public static Set<Integer> defaultIgnoredLogLevels() {
+    static Set<Integer> defaultIgnoredLogLevels() {
         ArraySet<Integer> ignoredLevels = new ArraySet<Integer>();
         ignoredLevels.add(android.util.Log.VERBOSE);
         ignoredLevels.add(android.util.Log.DEBUG);
