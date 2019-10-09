@@ -10,9 +10,11 @@ public class SampleApp extends Application {
     public void onCreate() {
         super.onCreate();
 
-        /* initialize {@link Log} internal */
-        // For DebugTree
-        Log.create(BuildConfig.DEBUG, Log.INFO, Log.DEBUG);
+        /* initialize {@link Log} internal DebugTree */
+        Log.create(BuildConfig.DEBUG, Log.VERBOSE, Log.DEBUG, Log.INFO);
+
+        /* test: initialize {@link Log} internal CrashlyticsTree */
+        // Log.create(!BuildConfig.DEBUG, Log.VERBOSE, Log.DEBUG, Log.INFO);
 
     }
 }

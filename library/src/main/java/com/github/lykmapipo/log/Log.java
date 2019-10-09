@@ -7,6 +7,7 @@ import androidx.collection.ArraySet;
 
 import com.crashlytics.android.Crashlytics;
 
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +18,8 @@ import java.util.Set;
 import timber.log.Timber;
 
 /**
- * Handy wrapper for {@link timber.log.Timber} and {@link com.crashlytics.android.Crashlytics}
+ * Handy wrapper for {@link timber.log.Timber} and
+ * {@link com.crashlytics.android.Crashlytics}
  * to provide logging utility helpers
  *
  * @author lally elias<lallyelias87@gmail.com>
@@ -50,6 +52,10 @@ public class Log {
     static Timber.DebugTree debugTree;
     @VisibleForTesting
     static CrashlyticsTree crashlyticsTree;
+
+    private Log() {
+        throw new AssertionError("No instances.");
+    }
 
     /**
      * Initialize log internals
@@ -94,44 +100,155 @@ public class Log {
         }
     }
 
+    //
+    // Shortcuts
+    //
+
+    /**
+     * Log a verbose message with optional format args.
+     */
+    public static void v(@NonNls String message, Object... args) {
+        Timber.v(message, args);
+    }
+
+    /**
+     * Log a verbose exception and a message with optional format args.
+     */
+    public static void v(Throwable t, @NonNls String message, Object... args) {
+        Timber.v(t, message, args);
+    }
+
     /**
      * Log a verbose exception.
      */
-    public static synchronized void v(Throwable t) {
+    public static void v(Throwable t) {
+        Timber.v(t);
+    }
 
+    /**
+     * Log a debug message with optional format args.
+     */
+    public static void d(@NonNls String message, Object... args) {
+        Timber.d(message, args);
+    }
+
+    /**
+     * Log a debug exception and a message with optional format args.
+     */
+    public static void d(Throwable t, @NonNls String message, Object... args) {
+        Timber.d(t, message, args);
     }
 
     /**
      * Log a debug exception.
      */
-    public static synchronized void d(Throwable t) {
+    public static void d(Throwable t) {
+        Timber.d(t);
+    }
 
+    /**
+     * Log an info message with optional format args.
+     */
+    public static void i(@NonNls String message, Object... args) {
+        Timber.i(message, args);
+    }
+
+    /**
+     * Log an info exception and a message with optional format args.
+     */
+    public static void i(Throwable t, @NonNls String message, Object... args) {
+        Timber.i(t, message, args);
     }
 
     /**
      * Log an info exception.
      */
-    public static synchronized void i(Throwable t) {
+    public static void i(Throwable t) {
+        Timber.i(t);
+    }
 
+    /**
+     * Log a warning message with optional format args.
+     */
+    public static void w(@NonNls String message, Object... args) {
+        Timber.w(message, args);
+    }
+
+    /**
+     * Log a warning exception and a message with optional format args.
+     */
+    public static void w(Throwable t, @NonNls String message, Object... args) {
+        Timber.w(t, message, args);
     }
 
     /**
      * Log a warning exception.
      */
-    public static synchronized void w(Throwable t) {
+    public static void w(Throwable t) {
+        Timber.w(t);
+    }
+
+    /**
+     * Log an error message with optional format args.
+     */
+    public static void e(@NonNls String message, Object... args) {
+        Timber.e(message, args);
+    }
+
+    /**
+     * Log an error exception and a message with optional format args.
+     */
+    public static void e(Throwable t, @NonNls String message, Object... args) {
+        Timber.e(t, message, args);
     }
 
     /**
      * Log an error exception.
      */
-    public static synchronized void e(Throwable t) {
+    public static void e(Throwable t) {
+        Timber.e(t);
+    }
 
+    /**
+     * Log an assert message with optional format args.
+     */
+    public static void wtf(@NonNls String message, Object... args) {
+        Timber.wtf(message, args);
+    }
+
+    /**
+     * Log an assert exception and a message with optional format args.
+     */
+    public static void wtf(Throwable t, @NonNls String message, Object... args) {
+        Timber.wtf(t, message, args);
     }
 
     /**
      * Log an assert exception.
      */
-    public static synchronized void wtf(Throwable t) {
+    public static void wtf(Throwable t) {
+        Timber.wtf(t);
+    }
+
+    /**
+     * Log at {@code priority} a message with optional format args.
+     */
+    public static void log(int priority, @NonNls String message, Object... args) {
+        Timber.log(priority, message, args);
+    }
+
+    /**
+     * Log at {@code priority} an exception and a message with optional format args.
+     */
+    public static void log(int priority, Throwable t, @NonNls String message, Object... args) {
+        Timber.log(priority, t, message, args);
+    }
+
+    /**
+     * Log at {@code priority} an exception.
+     */
+    public static void log(int priority, Throwable t) {
+        Timber.log(priority, t);
     }
 
 
