@@ -12,6 +12,8 @@ import com.crashlytics.android.Crashlytics;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import timber.log.Timber;
@@ -88,21 +90,44 @@ public class Log {
     /**
      * Provide default ignored log levels
      *
-     * @return {@link Set} of allowed log levels
-     * <p>
+     * @return {@link Set} of default ignored log levels
      * @author lally elias<lallyelias87@gmail.com>
      * @version 0.1.0
      * @since 0.1.0
      */
     @VisibleForTesting
     static Set<Integer> defaultIgnoredLogLevels() {
-        ArraySet<Integer> ignoredLevels = new ArraySet<Integer>();
-        ignoredLevels.add(android.util.Log.VERBOSE);
-        ignoredLevels.add(android.util.Log.DEBUG);
-        ignoredLevels.add(android.util.Log.INFO);
-        return ignoredLevels;
+        ArraySet<Integer> ignored = new ArraySet<Integer>();
+        ignored.add(android.util.Log.VERBOSE);
+        ignored.add(android.util.Log.DEBUG);
+        ignored.add(android.util.Log.INFO);
+        return ignored;
     }
 
+    /**
+     * Provide set of ignored log levels or default
+     *
+     * @param levels valid log level to ignore
+     * @return {@link Set} of ignored log levels
+     * @author lally elias<lallyelias87@gmail.com>
+     * @version 0.1.0
+     * @since 0.1.0
+     */
+    @VisibleForTesting
+    static Set<Integer> ignoredLogLevels(Integer... levels) {
+        Set<Integer> defaults = defaultIgnoredLogLevels();
+        try {
+            List<Integer> provided = Arrays.asList(levels);
+            ArraySet<Integer> ignored = new ArraySet<Integer>();
+            ignored.addAll(provided);
+            if (ignored.isEmpty()) {
+                ignored.addAll(defaults);
+            }
+            return ignored;
+        } catch (Exception e) {
+            return defaults;
+        }
+    }
 
     //
     // Timber Trees
