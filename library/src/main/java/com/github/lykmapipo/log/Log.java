@@ -4,11 +4,15 @@ package com.github.lykmapipo.log;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
+import androidx.collection.ArraySet;
 
 import com.crashlytics.android.Crashlytics;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
 
 import timber.log.Timber;
 
@@ -21,11 +25,14 @@ import timber.log.Timber;
  * @since 0.1.0
  */
 public class Log {
+    // constants
     public static final String TAG = Log.class.getSimpleName();
-
     public static final String KEY_PRIORITY = "priority";
     public static final String KEY_TAG = "tag";
     public static final String KEY_MESSAGE = "message";
+
+    // instances
+    private ArraySet<String> defaultIgnoredLevels = new ArraySet<String>();
 
     // TODO: Timber instance
     // TODO: Crashlytics instance
@@ -76,8 +83,32 @@ public class Log {
 
 
     //
+    // Utils
+    //
+
+    /**
+     * Provide default ignored log levels
+     *
+     * @return {@link Set} of allowed log levels
+     * <p>
+     * * @author lally elias<lallyelias87@gmail.com>
+     * * @version 0.1.0
+     * * @since 0.1.0
+     */
+    @VisibleForTesting
+    public static Set<Integer> defaultIgnoredLogLevels() {
+        ArraySet<Integer> ignoredLevels = new ArraySet<Integer>();
+        ignoredLevels.add(android.util.Log.VERBOSE);
+        ignoredLevels.add(android.util.Log.DEBUG);
+        ignoredLevels.add(android.util.Log.INFO);
+        return ignoredLevels;
+    }
+
+
+    //
     // Timber Trees
     //
+
 
     /**
      * {@link Crashlytics} tree for {@link Timber}
@@ -99,6 +130,7 @@ public class Log {
             Crashlytics.setInt(KEY_PRIORITY, priority);
             Crashlytics.setString(KEY_TAG, tag);
             Crashlytics.setString(KEY_MESSAGE, message);
+            // TODO: pass additional custom properties
 
             // log
             if (t == null) {
