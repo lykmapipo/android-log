@@ -92,7 +92,6 @@ public class Log {
      *
      * @return {@link Set} of default ignored log levels
      * @author lally elias<lallyelias87@gmail.com>
-     * @version 0.1.0
      * @since 0.1.0
      */
     @VisibleForTesting
@@ -105,12 +104,11 @@ public class Log {
     }
 
     /**
-     * Provide set of ignored log levels or default
+     * Provide set of ignored log levels or defaults
      *
      * @param levels valid log level to ignore
      * @return {@link Set} of ignored log levels
      * @author lally elias<lallyelias87@gmail.com>
-     * @version 0.1.0
      * @since 0.1.0
      */
     @VisibleForTesting
