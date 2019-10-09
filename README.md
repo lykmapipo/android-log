@@ -47,6 +47,7 @@ Log.d(String tag, String msg, Throwable tr);
 Log.i(String tag, String msg, Throwable tr);
 Log.w(String tag, String msg, Throwable tr);
 Log.e(String tag, String msg, Throwable tr);
+Log.wtf(String tag, String msg, Throwable tr);
 ```
 
 

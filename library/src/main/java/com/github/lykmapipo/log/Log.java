@@ -58,4 +58,10 @@ public class Log {
     public static synchronized void e(Throwable t) {
 
     }
+
+    /**
+     * Log an assert exception.
+     */
+    public static synchronized void wtf(Throwable t) {
+    }
 }

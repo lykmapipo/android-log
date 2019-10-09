@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(new NullPointerException());
                 Log.w(new NullPointerException());
                 Log.e(new NullPointerException());
+                Log.wtf(new NullPointerException());
             }
         });
 
