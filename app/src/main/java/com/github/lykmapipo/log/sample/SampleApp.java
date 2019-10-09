@@ -11,7 +11,8 @@ public class SampleApp extends Application {
         super.onCreate();
 
         /* initialize {@link Log} internal */
-        Log.create(getApplicationContext());
+        // For DebugTree
+        Log.create(BuildConfig.DEBUG, Log.INFO, Log.DEBUG);
 
     }
 }

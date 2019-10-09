@@ -35,9 +35,9 @@ public class LogTest {
 
         assertThat(levels, is(not(equalTo(null))));
         assertThat(levels.isEmpty(), is(not(equalTo(true))));
-        assertThat(levels.contains(android.util.Log.VERBOSE), is(equalTo(true)));
-        assertThat(levels.contains(android.util.Log.DEBUG), is(equalTo(true)));
-        assertThat(levels.contains(android.util.Log.INFO), is(equalTo(true)));
+        assertThat(levels.contains(Log.VERBOSE), is(equalTo(true)));
+        assertThat(levels.contains(Log.DEBUG), is(equalTo(true)));
+        assertThat(levels.contains(Log.INFO), is(equalTo(true)));
     }
 
     @Test
@@ -46,20 +46,23 @@ public class LogTest {
 
         assertThat(levels, is(not(equalTo(null))));
         assertThat(levels.isEmpty(), is(not(equalTo(true))));
-        assertThat(levels.contains(android.util.Log.VERBOSE), is(equalTo(true)));
-        assertThat(levels.contains(android.util.Log.DEBUG), is(equalTo(true)));
-        assertThat(levels.contains(android.util.Log.INFO), is(equalTo(true)));
+        assertThat(levels.contains(Log.VERBOSE), is(equalTo(true)));
+        assertThat(levels.contains(Log.DEBUG), is(equalTo(true)));
+        assertThat(levels.contains(Log.INFO), is(equalTo(true)));
     }
 
     @Test
     public void shouldProvideIgnoredLogLevels_01() {
-        Set<Integer> levels = Log.ignoredLogLevels(android.util.Log.INFO);
+        Set<Integer> levels = Log.ignoredLogLevels(Log.INFO, Log.ASSERT, Log.WARN, Log.ERROR);
 
         assertThat(levels, is(not(equalTo(null))));
         assertThat(levels.isEmpty(), is(not(equalTo(true))));
-        assertThat(levels.contains(android.util.Log.VERBOSE), is(equalTo(false)));
-        assertThat(levels.contains(android.util.Log.DEBUG), is(equalTo(false)));
-        assertThat(levels.contains(android.util.Log.INFO), is(equalTo(true)));
+        assertThat(levels.contains(Log.VERBOSE), is(equalTo(false)));
+        assertThat(levels.contains(Log.DEBUG), is(equalTo(false)));
+        assertThat(levels.contains(Log.INFO), is(equalTo(true)));
+        assertThat(levels.contains(Log.ASSERT), is(equalTo(true)));
+        assertThat(levels.contains(Log.WARN), is(equalTo(true)));
+        assertThat(levels.contains(Log.ERROR), is(equalTo(true)));
     }
 
     @Test
@@ -69,6 +72,30 @@ public class LogTest {
         assertThat(tree, is(not(equalTo(null))));
         assertThat(tree, is(instanceOf(Log.CrashlyticsTree.class)));
         assertThat(tree, is(instanceOf(Timber.Tree.class)));
+    }
+
+    @Test
+    public void shouldInitializeLog_01() {
+        Log.alreadyInitialized = false;
+        Log.create(true);
+
+        assertThat(Log.alreadyInitialized, is(equalTo(true)));
+        assertThat(Log.allowCrashlytics, is(equalTo(false)));
+        assertThat(Log.ignoredLogLevels, is(not(equalTo(null))));
+        assertThat(Log.crashlyticsTree, is(equalTo(null)));
+        assertThat(Log.debugTree, is(not(equalTo(null))));
+    }
+
+    @Test
+    public void shouldInitializeLog_02() {
+        Log.alreadyInitialized = false;
+        Log.create(false);
+
+        assertThat(Log.alreadyInitialized, is(equalTo(true)));
+        assertThat(Log.allowCrashlytics, is(equalTo(true)));
+        assertThat(Log.ignoredLogLevels, is(not(equalTo(null))));
+        assertThat(Log.debugTree, is(equalTo(null)));
+        assertThat(Log.crashlyticsTree, is(not(equalTo(null))));
     }
 
     @After

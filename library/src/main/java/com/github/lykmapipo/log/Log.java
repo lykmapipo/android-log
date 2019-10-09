@@ -1,8 +1,6 @@
 package com.github.lykmapipo.log;
 
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.collection.ArraySet;
@@ -33,13 +31,67 @@ public class Log {
     public static final String KEY_TAG = "tag";
     public static final String KEY_MESSAGE = "message";
 
+    // copy of log levels
+    public static final int VERBOSE = android.util.Log.VERBOSE; // 2
+    public static final int DEBUG = android.util.Log.DEBUG; // 3
+    public static final int INFO = android.util.Log.INFO; // 4
+    public static final int WARN = android.util.Log.WARN; // 5
+    public static final int ERROR = android.util.Log.ERROR; // 6
+    public static final int ASSERT = android.util.Log.ASSERT; // 7
+
     // instances
+    @VisibleForTesting
+    static Boolean alreadyInitialized = false;
+    @VisibleForTesting
+    static Boolean allowCrashlytics = false;
+    @VisibleForTesting
+    static Set<Integer> ignoredLogLevels;
+    @VisibleForTesting
+    static Timber.DebugTree debugTree;
+    @VisibleForTesting
+    static CrashlyticsTree crashlyticsTree;
 
-    // TODO: Timber instance
-    // TODO: Crashlytics instance
+    /**
+     * Initialize log internals
+     *
+     * @param disableCrashlytics whether to use crashlytics or debug tree.
+     *                           if disable debug tree will be used otherwise
+     *                           crashlytics will be used
+     * @param ignoredLevels      log levels to ignore with crashlytics
+     * @author lally elias<lallyelias87@gmail.com>
+     * @since 0.1.0
+     */
+    public static synchronized void create(
+            @NonNull Boolean disableCrashlytics,
+            Integer... ignoredLevels
+    ) {
+        // setup timber & its trees
+        if (!alreadyInitialized) {
+            allowCrashlytics = !disableCrashlytics;
+            ignoredLogLevels = ignoredLogLevels(ignoredLevels);
 
-    public static synchronized void create(@NonNull Context context, String... ignoredLevels) {
-        // TODO: create timber tree
+            // setup CrashlyticsTree
+            if (allowCrashlytics) {
+                if (debugTree != null) {
+                    Timber.uproot(debugTree);
+                    debugTree = null;
+                }
+                crashlyticsTree = new CrashlyticsTree();
+                Timber.plant(crashlyticsTree);
+            }
+
+            // setup DebugTree
+            else {
+                if (crashlyticsTree != null) {
+                    Timber.uproot(crashlyticsTree);
+                    crashlyticsTree = null;
+                }
+                debugTree = new Timber.DebugTree();
+                Timber.plant(debugTree);
+            }
+
+            alreadyInitialized = true;
+        }
     }
 
     /**
@@ -97,9 +149,9 @@ public class Log {
     @VisibleForTesting
     static Set<Integer> defaultIgnoredLogLevels() {
         ArraySet<Integer> ignored = new ArraySet<Integer>();
-        ignored.add(android.util.Log.VERBOSE);
-        ignored.add(android.util.Log.DEBUG);
-        ignored.add(android.util.Log.INFO);
+        ignored.add(Log.VERBOSE);
+        ignored.add(Log.DEBUG);
+        ignored.add(Log.INFO);
         return ignored;
     }
 
@@ -146,7 +198,10 @@ public class Log {
                 int priority, @Nullable String tag,
                 @NotNull String message, @Nullable Throwable t
         ) {
-            // TODO: handle ignored levels
+            // handle ignored levels
+            if (ignoredLogLevels.contains(priority)) {
+                return;
+            }
 
             // add log custom keys
             Crashlytics.setInt(KEY_PRIORITY, priority);

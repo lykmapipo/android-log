@@ -32,7 +32,7 @@ public class SampleApp extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.create(getApplicationContext());
+        Log.create(BuildConfig.DEBUG, Log.INFO, Log.DEBUG);;
     }
 
 }
