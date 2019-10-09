@@ -29,12 +29,6 @@ import timber.log.Timber;
  * @since 0.1.0
  */
 public class Log {
-    // constants
-    public static final String TAG = Log.class.getSimpleName();
-    public static final String KEY_PRIORITY = "priority";
-    public static final String KEY_TAG = "tag";
-    public static final String KEY_MESSAGE = "message";
-
     // copy of log levels
     public static final int VERBOSE = android.util.Log.VERBOSE; // 2
     public static final int DEBUG = android.util.Log.DEBUG; // 3
@@ -42,6 +36,11 @@ public class Log {
     public static final int WARN = android.util.Log.WARN; // 5
     public static final int ERROR = android.util.Log.ERROR; // 6
     public static final int ASSERT = android.util.Log.ASSERT; // 7
+
+    // constants
+    private static final String KEY_PRIORITY = "priority";
+    private static final String KEY_TAG = "tag";
+    private static final String KEY_MESSAGE = "message";
 
     // instances
     @VisibleForTesting
