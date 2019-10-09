@@ -300,6 +300,38 @@ public class Log {
     // Timber Trees
     //
 
+    /**
+     * Set user identifier for {@link Crashlytics}
+     *
+     * @param identifier valid unique user identifier
+     * @author lally elias<lallyelias87@gmail.com>
+     * @since 0.1.0
+     */
+    public static void setUserIdentifier(@NonNull String identifier) {
+        Crashlytics.setUserIdentifier(identifier);
+    }
+
+    /**
+     * Set user email for {@link Crashlytics}
+     *
+     * @param email valid unique user email
+     * @author lally elias<lallyelias87@gmail.com>
+     * @since 0.1.0
+     */
+    public static void setUserEmail(@NonNull String email) {
+        Crashlytics.setUserEmail(email);
+    }
+
+    /**
+     * Set user name for {@link Crashlytics}
+     *
+     * @param name valid user name
+     * @author lally elias<lallyelias87@gmail.com>
+     * @since 0.1.0
+     */
+    public static void setUserName(@NonNull String name) {
+        Crashlytics.setUserName(name);
+    }
 
     /**
      * {@link Crashlytics} tree for {@link Timber}
