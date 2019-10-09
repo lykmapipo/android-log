@@ -32,7 +32,6 @@ public class Log {
     public static final String KEY_MESSAGE = "message";
 
     // instances
-    private ArraySet<String> defaultIgnoredLevels = new ArraySet<String>();
 
     // TODO: Timber instance
     // TODO: Crashlytics instance
@@ -91,9 +90,9 @@ public class Log {
      *
      * @return {@link Set} of allowed log levels
      * <p>
-     * * @author lally elias<lallyelias87@gmail.com>
-     * * @version 0.1.0
-     * * @since 0.1.0
+     * @author lally elias<lallyelias87@gmail.com>
+     * @version 0.1.0
+     * @since 0.1.0
      */
     @VisibleForTesting
     static Set<Integer> defaultIgnoredLogLevels() {
