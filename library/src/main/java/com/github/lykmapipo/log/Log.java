@@ -335,6 +335,18 @@ public class Log {
     }
 
     /**
+     * Set user properties to {@link Crashlytics}
+     *
+     * @param key   valid property key
+     * @param value valid property value
+     * @author lally elias<lallyelias87@gmail.com>
+     * @since 0.1.0
+     */
+    public static void setUserProperty(@NonNull String key, @NonNull Object value) {
+        set(key, value);
+    }
+
+    /**
      * Set custom properties to {@link Crashlytics}
      *
      * @param key   valid property key
