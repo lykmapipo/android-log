@@ -1,7 +1,11 @@
 package com.github.lykmapipo.log.sample;
 
 import android.app.Application;
+import android.content.Context;
 
+import androidx.annotation.NonNull;
+
+import com.github.lykmapipo.common.provider.Provider;
 import com.github.lykmapipo.log.Log;
 
 
@@ -11,10 +15,19 @@ public class SampleApp extends Application {
         super.onCreate();
 
         /* initialize {@link Log} internal DebugTree */
-        Log.create(BuildConfig.DEBUG);
+        Log.of(new Provider() {
+            @NonNull
+            @Override
+            public Context getApplicationContext() {
+                return SampleApp.this;
+            }
 
-        /* simulate: initialize {@link Log} internal CrashlyticsTree */
-        // Log.create(!BuildConfig.DEBUG);
+            @NonNull
+            @Override
+            public Boolean isDebug() {
+                return BuildConfig.DEBUG;
+            }
+        });
 
     }
 }

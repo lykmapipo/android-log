@@ -2,7 +2,10 @@ package com.github.lykmapipo.log;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.test.core.app.ApplicationProvider;
+
+import com.github.lykmapipo.common.provider.Provider;
 
 import org.junit.After;
 import org.junit.Before;
@@ -23,10 +26,39 @@ import static org.hamcrest.Matchers.not;
 @RunWith(RobolectricTestRunner.class)
 public class LogTest {
     private Context context;
+    private Provider debugProvider;
+    private Provider crashlyticsProvider;
 
     @Before
     public void setup() {
         context = ApplicationProvider.getApplicationContext();
+        debugProvider = new Provider() {
+            @NonNull
+            @Override
+            public Context getApplicationContext() {
+                return context;
+            }
+
+            @NonNull
+            @Override
+            public Boolean isDebug() {
+                return true;
+            }
+        };
+
+        crashlyticsProvider = new Provider() {
+            @NonNull
+            @Override
+            public Context getApplicationContext() {
+                return context;
+            }
+
+            @NonNull
+            @Override
+            public Boolean isDebug() {
+                return false;
+            }
+        };
     }
 
     @Test
@@ -76,30 +108,29 @@ public class LogTest {
 
     @Test
     public void shouldInitializeLogWithDebugTree() {
-        Log.alreadyInitialized = false;
-        Log.create(true);
+        Log.of(debugProvider);
 
-        assertThat(Log.alreadyInitialized, is(equalTo(true)));
-        assertThat(Log.allowCrashlytics, is(equalTo(false)));
-        assertThat(Log.ignoredLogLevels, is(not(equalTo(null))));
+        assertThat(Log.appProvider, is(not(equalTo(null))));
+        assertThat(Log.appProvider.isDebug(), is(equalTo(true)));
         assertThat(Log.crashlyticsTree, is(equalTo(null)));
         assertThat(Log.debugTree, is(not(equalTo(null))));
     }
 
     @Test
     public void shouldInitializeLogWithCrashlyticsTree() {
-        Log.alreadyInitialized = false;
-        Log.create(false);
+        Log.of(crashlyticsProvider);
 
-        assertThat(Log.alreadyInitialized, is(equalTo(true)));
-        assertThat(Log.allowCrashlytics, is(equalTo(true)));
-        assertThat(Log.ignoredLogLevels, is(not(equalTo(null))));
+        assertThat(Log.appProvider, is(not(equalTo(null))));
+        assertThat(Log.appProvider.isDebug(), is(equalTo(false)));
         assertThat(Log.debugTree, is(equalTo(null)));
         assertThat(Log.crashlyticsTree, is(not(equalTo(null))));
     }
 
     @After
     public void clean() {
+        crashlyticsProvider = null;
+        debugProvider = null;
         context = null;
+        Log.dispose();
     }
 }

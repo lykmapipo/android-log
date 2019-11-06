@@ -1,20 +1,18 @@
 package com.github.lykmapipo.log;
 
 
-import android.text.TextUtils;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.collection.ArraySet;
 
 import com.crashlytics.android.Crashlytics;
+import com.github.lykmapipo.common.Common;
+import com.github.lykmapipo.common.provider.Provider;
 
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
 import timber.log.Timber;
@@ -29,7 +27,7 @@ import timber.log.Timber;
  * @since 0.1.0
  */
 public class Log {
-    // copy of log levels
+    // log levels
     public static final int VERBOSE = android.util.Log.VERBOSE; // 2
     public static final int DEBUG = android.util.Log.DEBUG; // 3
     public static final int INFO = android.util.Log.INFO; // 4
@@ -44,15 +42,12 @@ public class Log {
 
     // instances
     @VisibleForTesting
-    static Boolean alreadyInitialized = false;
-    @VisibleForTesting
-    static Boolean allowCrashlytics = false;
-    @VisibleForTesting
-    static Set<Integer> ignoredLogLevels;
+    static CrashlyticsTree crashlyticsTree;
     @VisibleForTesting
     static Timber.DebugTree debugTree;
     @VisibleForTesting
-    static CrashlyticsTree crashlyticsTree;
+    static Provider appProvider;
+
 
     private Log() {
         throw new AssertionError("No instances.");
@@ -61,24 +56,16 @@ public class Log {
     /**
      * Initialize log internals
      *
-     * @param disableCrashlytics whether to use crashlytics or debug tree.
-     *                           if disable debug tree will be used otherwise
-     *                           crashlytics will be used
-     * @param ignoredLevels      log levels to ignore with crashlytics
-     * @author lally elias<lallyelias87@gmail.com>
-     * @since 0.1.0
+     * @param provider valid application provider
+     * @since 0.3.0
      */
-    public static synchronized void create(
-            @NonNull Boolean disableCrashlytics,
-            Integer... ignoredLevels
-    ) {
+    public static synchronized void of(@NonNull Provider provider) {
         // setup timber & its trees
-        if (!alreadyInitialized) {
-            allowCrashlytics = !disableCrashlytics;
-            ignoredLogLevels = ignoredLogLevels(ignoredLevels);
+        if (appProvider == null) {
+            appProvider = provider;
 
             // setup CrashlyticsTree
-            if (allowCrashlytics) {
+            if (!appProvider.isDebug()) {
                 if (debugTree != null) {
                     Timber.uproot(debugTree);
                     debugTree = null;
@@ -96,9 +83,16 @@ public class Log {
                 debugTree = new Timber.DebugTree();
                 Timber.plant(debugTree);
             }
-
-            alreadyInitialized = true;
         }
+    }
+
+    /**
+     * Clean up and reset {@link Log} internals
+     */
+    public static synchronized void dispose() {
+        debugTree = null;
+        crashlyticsTree = null;
+        appProvider = null;
     }
 
     //
@@ -261,16 +255,14 @@ public class Log {
      * Provide default ignored log levels
      *
      * @return {@link Set} of default ignored log levels
-     * @author lally elias<lallyelias87@gmail.com>
      * @since 0.1.0
      */
     @VisibleForTesting
     static Set<Integer> defaultIgnoredLogLevels() {
-        ArraySet<Integer> ignored = new ArraySet<Integer>();
-        ignored.add(Log.VERBOSE);
-        ignored.add(Log.DEBUG);
-        ignored.add(Log.INFO);
-        return ignored;
+        if (appProvider != null) {
+            return appProvider.ignoredLogLevels();
+        }
+        return Common.Value.setOf(VERBOSE, INFO, DEBUG);
     }
 
     /**
@@ -278,14 +270,13 @@ public class Log {
      *
      * @param levels valid log level to ignore
      * @return {@link Set} of ignored log levels
-     * @author lally elias<lallyelias87@gmail.com>
      * @since 0.1.0
      */
     @VisibleForTesting
     static Set<Integer> ignoredLogLevels(Integer... levels) {
         Set<Integer> defaults = defaultIgnoredLogLevels();
         try {
-            List<Integer> provided = Arrays.asList(levels);
+            Set<Integer> provided = Common.Value.setOf(levels);
             ArraySet<Integer> ignored = new ArraySet<Integer>();
             ignored.addAll(provided);
             if (ignored.isEmpty()) {
@@ -305,7 +296,6 @@ public class Log {
      * Set user identifier for {@link Crashlytics}
      *
      * @param identifier valid unique user identifier
-     * @author lally elias<lallyelias87@gmail.com>
      * @since 0.1.0
      */
     public static void setUserIdentifier(@NonNull String identifier) {
@@ -316,7 +306,6 @@ public class Log {
      * Set user email for {@link Crashlytics}
      *
      * @param email valid unique user email
-     * @author lally elias<lallyelias87@gmail.com>
      * @since 0.1.0
      */
     public static void setUserEmail(@NonNull String email) {
@@ -327,7 +316,6 @@ public class Log {
      * Set user name for {@link Crashlytics}
      *
      * @param name valid user name
-     * @author lally elias<lallyelias87@gmail.com>
      * @since 0.1.0
      */
     public static void setUserName(@NonNull String name) {
@@ -339,7 +327,6 @@ public class Log {
      *
      * @param key   valid property key
      * @param value valid property value
-     * @author lally elias<lallyelias87@gmail.com>
      * @since 0.1.0
      */
     public static void setUserProperty(@NonNull String key, @NonNull Object value) {
@@ -351,12 +338,11 @@ public class Log {
      *
      * @param key   valid property key
      * @param value valid property value
-     * @author lally elias<lallyelias87@gmail.com>
      * @since 0.1.0
      */
     public static void set(@NonNull String key, @NonNull Object value) {
         // ensure valid key
-        if (!TextUtils.isEmpty(key)) {
+        if (!Common.Strings.isEmpty(key)) {
             // set boolean property
             if (value instanceof Boolean) {
                 Crashlytics.setBool(key, (Boolean) value);
@@ -388,7 +374,6 @@ public class Log {
     /**
      * {@link Crashlytics} tree for {@link Timber}
      *
-     * @author lally elias<lallyelias87@gmail.com>
      * @version 0.1.0
      * @since 0.1.0
      */
@@ -400,6 +385,7 @@ public class Log {
                 @NotNull String message, @Nullable Throwable t
         ) {
             // handle ignored levels
+            Set<Integer> ignoredLogLevels = appProvider.ignoredLogLevels();
             if (ignoredLogLevels.contains(priority)) {
                 return;
             }

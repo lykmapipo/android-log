@@ -18,7 +18,7 @@ add `android-log` dependency into your project
 
 ```gradle
 dependencies {
-    implementation 'com.github.lykmapipo:android-log:v0.1.2'
+    implementation 'com.github.lykmapipo:android-log:v0.2.0'
 }
 ```
 
@@ -27,14 +27,27 @@ dependencies {
 Initialize `android-log`
 
 ```java
-public class SampleApp extends Application{
-
+public class SampleApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.create(BuildConfig.DEBUG);
-    }
 
+        /* initialize {@link Log} internal DebugTree */
+        Log.of(new Provider() {
+            @NonNull
+            @Override
+            public Context getApplicationContext() {
+                return SampleApp.this;
+            }
+
+            @NonNull
+            @Override
+            public Boolean isDebug() {
+                return BuildConfig.DEBUG;
+            }
+        });
+
+    }
 }
 ```
 
