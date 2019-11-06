@@ -18,7 +18,7 @@ add `android-log` dependency into your project
 
 ```gradle
 dependencies {
-    implementation 'com.github.lykmapipo:android-log:v0.2.1'
+    implementation 'com.github.lykmapipo:android-log:v0.2.2'
 }
 ```
 
