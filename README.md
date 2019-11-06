@@ -32,7 +32,7 @@ public class SampleApp extends Application {
     public void onCreate() {
         super.onCreate();
 
-        /* initialize {@link Log} internal DebugTree */
+        /* initialize {@link Log} internals */
         Log.of(new Provider() {
             @NonNull
             @Override
